@@ -55,7 +55,7 @@ def read_single_customer(customer_id: int):
 
 @app.get("/customers_stats")
 def all_customers_stats():
-    return customers.describe().loc[["count", "mean", "std"], :].to_dict()
+    return customers.describe().loc[["count", "mean", "std"], :].T.to_dict()
 
 
 # @app.get("/customers/{customer_id}/predict")
