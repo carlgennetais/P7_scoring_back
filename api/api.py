@@ -11,16 +11,16 @@ app = FastAPI()
 
 
 customers = (
-    pd.read_pickle("../data/processed/app_train_cleaned.pkl")
+    pd.read_pickle("./data/processed/app_train_cleaned.pkl")
     .set_index("SK_ID_CURR")
     .drop("TARGET", axis=1)
 )
 
 # load model and shap explainer
-with open("../models/model.pkl", "rb") as f:
+with open("./models/model.pkl", "rb") as f:
     model = pickle.load(f)
 f.close()
-with open("../models/shap_explainer.pkl", "rb") as f:
+with open("./models/shap_explainer.pkl", "rb") as f:
     shap_explainer = pickle.load(f)
 f.close()
 
