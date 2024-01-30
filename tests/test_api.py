@@ -1,8 +1,9 @@
 import pytest
 import requests
+from api.api import app
+from fastapi.testclient import TestClient
 
-# from api.api import list_customers
-
+client = TestClient(app)
 API_URL = "http://127.0.0.1:8000"
 
 
