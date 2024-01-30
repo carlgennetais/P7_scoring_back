@@ -1,5 +1,4 @@
 import pickle
-from typing import Union
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
@@ -27,10 +26,9 @@ f.close()
 
 
 def get_customer(customer_id: id):
-    if customer_id in customers.index:
-        return customers.loc[customer_id, :]
-    else:
-        return -1
+    if customer_id not in customers.index:
+        raise HTTPException(status_code=404, detail="Customer ID does not exist")
+    return customers.loc[customer_id, :]
 
 
 # API routes
@@ -47,10 +45,9 @@ def list_customers():
 
 @app.get("/customers/{customer_id}")
 def read_single_customer(customer_id: int):
-    if customer_id in customers.index:
-        return customers.loc[customer_id, :].fillna("").to_dict()
-    else:
+    if customer_id not in customers.index:
         raise HTTPException(status_code=404, detail="Customer ID does not exist")
+    return customers.loc[customer_id, :].fillna("").to_dict()
 
 
 @app.get("/customers_stats")
@@ -60,22 +57,21 @@ def all_customers_stats():
 
 # @app.get("/customers/{customer_id}/predict")
 @app.get("/predict/{customer_id}")
-def predict(customer_id: int, q: Union[str, None] = None):
-    if customer_id in customers.index:
-        probaList = model.predict_proba(pd.DataFrame(customers.loc[customer_id, :]).T)[
-            0
-        ]
-        return {0: probaList[0], 1: probaList[1]}
-    else:
+def predict(customer_id: int):
+    if customer_id not in customers.index:
         raise HTTPException(status_code=404, detail="Customer ID does not exist")
+    probaList = model.predict_proba(pd.DataFrame(customers.loc[customer_id, :]).T)[0]
+    return {0: probaList[0], 1: probaList[1]}
 
 
 @app.get("/shap/{customer_id}")
-def shap_values(customer_id: int, q: Union[str, None] = None):
+def shap_values(customer_id: int):
     """
     Return 20
     TODO
     """
+    if customer_id not in customers.index:
+        raise HTTPException(status_code=404, detail="Customer ID does not exist")
     shap_for_sample = pd.DataFrame(
         shap_explainer.shap_values(customers.loc[customer_id, :])
     ).fillna(0)
