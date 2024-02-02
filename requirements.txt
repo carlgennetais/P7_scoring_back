@@ -1,0 +1,8 @@
+# local package
+-e .
+
+flake8
+fastapi
+uvicorn
+requests
+pytest

@@ -25,7 +25,10 @@ with open("./models/shap_explainer.pkl", "rb") as f:
 f.close()
 
 
-def get_customer(customer_id: id):
+def get_customer(customer_id: int):
+    """
+    Return data for one customer
+    """
     if customer_id not in customers.index:
         raise HTTPException(status_code=404, detail="Customer ID does not exist")
     return customers.loc[customer_id, :]
@@ -46,7 +49,9 @@ def list_customers():
 @app.get("/customers/{customer_id}")
 def read_single_customer(customer_id: int):
     if customer_id not in customers.index:
-        raise HTTPException(status_code=404, detail="Customer ID does not exist")
+        raise HTTPException(
+            status_code=404, detail="Customer ID is invalid or does not exist"
+        )
     return customers.loc[customer_id, :].fillna("").to_dict()
 
 
