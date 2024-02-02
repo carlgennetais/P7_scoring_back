@@ -11,20 +11,16 @@ from typing import Union
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 
-
 # source code
 from .loaders import DataLoader
-
 
 app = FastAPI()
 
 # load cleaned-transformed dataframe once
 # use raw data instead for interpretability ?
 
-<<<<<<< HEAD
 
 data = DataLoader.df()
-=======
 # load model and shap explainer
 with open("../../models/model.pkl", "rb") as f:
     model = pickle.load(f)
@@ -32,14 +28,13 @@ f.close()
 with open("../../models/shap_explainer.pkl", "rb") as f:
     shap_explainer = pickle.load(f)
 f.close()
->>>>>>> 8346ea2 (update changelog)
 
 
-def get_customer(customer_id: id):
-    if customer_id in customers.index:
-        return customers.loc[customer_id, :]
-    else:
-        return -1
+# def get_customer(customer_id: id):
+#     if customer_id in customers.index:
+#         return customers.loc[customer_id, :]
+#     else:
+#         return -1
 
 
 # API routes
