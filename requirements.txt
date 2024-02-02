@@ -6,3 +6,5 @@ fastapi
 uvicorn
 requests
 pytest
+pandas
+numpy
