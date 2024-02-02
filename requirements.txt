@@ -13,5 +13,4 @@ scikit-learn
 scipy
 seaborn
 shap
-sklearn
 uvicorn
