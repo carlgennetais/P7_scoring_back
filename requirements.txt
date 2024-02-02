@@ -1,10 +1,17 @@
 # local package
 -e .
 
-flake8
 fastapi
-uvicorn
-requests
-pytest
-pandas
+flake8
+imblearn
+matplotlib
 numpy
+pandas
+pytest
+requests
+scikit-learn
+scipy
+seaborn
+shap
+sklearn
+uvicorn
