@@ -19,9 +19,9 @@ customers = (
 with open("./models/model.pkl", "rb") as f:
     model = pickle.load(f)
 f.close()
-with open("./models/shap_explainer.pkl", "rb") as f:
-    shap_explainer = pickle.load(f)
-f.close()
+with open("./models/shap_explainer.pkl", "rb") as f2:
+    shap_explainer = pickle.load(f2)
+f2.close()
 
 
 def get_customer(customer_id: int):
