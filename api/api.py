@@ -11,7 +11,7 @@ app = FastAPI()
 
 
 customers = (
-    pd.read_pickle("./data/processed/app_train_cleaned.pkl")
+    pd.read_pickle("./data/processed/app_train_cleaned_sample.pkl")
     .set_index("SK_ID_CURR")
     .drop("TARGET", axis=1)
 )
