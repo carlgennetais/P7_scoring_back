@@ -1,5 +1,5 @@
 # local package
--e .
+
 
 cloudpickle==3.0.0
 fastapi-restful==0.5.0
@@ -15,3 +15,4 @@ pytest==8.0.0
 scikit-learn==1.2.2
 shap==0.44.0
 uvicorn==0.25.0
+anyio==4.2.0
