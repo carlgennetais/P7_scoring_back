@@ -95,6 +95,7 @@ target/
 **/*.jupyterlab-workspace
 .virtual_documents/
 
+Untitled*.ipynb
 
 
 .venv

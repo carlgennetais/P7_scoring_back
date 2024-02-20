@@ -40,3 +40,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --verbose
+    - name: Deploy on Render.com
+      run: wget https://api.render.com/deploy/srv-cnahgfi1hbls73dkbueg?key=6x9W1V71_1Y
+      # todo use secrets.yaml for this url?

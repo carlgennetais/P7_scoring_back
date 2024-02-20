@@ -1,5 +1,4 @@
 import pickle
-
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from sklearn.preprocessing import StandardScaler
