@@ -99,3 +99,6 @@ Untitled*.ipynb
 
 
 .venv
+
+
+.ipynb_checkpoints/
