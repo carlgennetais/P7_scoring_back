@@ -15,11 +15,13 @@ class DataLoader:
     models = "./models/"
 
     @classmethod
-    def df(
-        cls,
-        fn: str = "app_train_cleaned.pkl",
-    ):
-        """Load data from disk."""
+    def df(cls, fn: str = "app_train_cleaned.pkl") -> pd.DataFrame:
+        """Load data from disk.
+
+        Opt Args:
+            fn (str): Filename. default: "app_train_cleaned.pkl"
+        Returns:
+            pd.DataFrame: Dataframe."""
 
         # filename
         _fn = os.path.join(cls.data, fn)
@@ -33,10 +35,7 @@ class DataLoader:
         return customers
 
     @classmethod
-    def model(
-        cls,
-        fn: str = "model.pkl",
-    ):
+    def model( cls, fn: str = "model.pkl"):
         """Load model from disk."""
 
         # filename
