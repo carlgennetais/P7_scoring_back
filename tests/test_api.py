@@ -10,7 +10,7 @@ import pytest
 class TestAPI:
     """Test the API endpoints."""
 
-    def test_list_customers(self):
+    def test_list_customers(self, client):
         """Test the list of customers endpoint."""
 
         response = client.get("/customers")
@@ -28,7 +28,9 @@ class TestAPI:
     @pytest.mark.parametrize(
         "customer_id, expected_code", [(0, 404), (12, 404), (100006, 200), ("1000006", 404)]
     )
-    def test_read_single_customer(self, customer_id, expected_code):
+    def test_read_single_customer(self,client, customer_id, expected_code):
+        """Test the read single customer endpoint.  """
+
         response = client.get(f"/customers/{customer_id}")
         status_code = response.status_code
         content = response.json()
@@ -38,7 +40,9 @@ class TestAPI:
             assert len(content) > 10
 
 
-    def test_all_customers_stats(self):
+    def test_all_customers_stats(self, client):
+        """Test the all customers stats endpoint."""
+        
         response = client.get("/customers_stats")
         status_code = response.status_code
         content = response.json()
