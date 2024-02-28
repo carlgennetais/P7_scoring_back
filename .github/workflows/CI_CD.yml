@@ -1,0 +1,53 @@
+name: Continuous Integration and Continuous Deployment
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  CI: # Continous Integration
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout github repo
+      uses: actions/checkout@v3
+    - name: Set up Python 3.11.5
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11.5"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # pip install flake8 pytest black isort
+        #
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Format with black
+      run: black .
+    - name: Sort import with isort
+      run: isort .
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        pytest --verbose
+
+  CD: # Continuous Deployment
+    needs: [CI]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout github repo
+      uses: actions/checkout@v3
+    - name: Deploy on Render.com
+      run: wget https://api.render.com/deploy/srv-cnahgfi1hbls73dkbueg?key=6x9W1V71_1Y
+      # todo use secrets.yaml for this url?
