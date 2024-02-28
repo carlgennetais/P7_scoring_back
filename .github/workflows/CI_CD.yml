@@ -49,5 +49,4 @@ jobs:
     - name: Checkout github repo
       uses: actions/checkout@v3
     - name: Deploy on Render.com
-      run: wget https://api.render.com/deploy/::add-mask::${{secrets.RENDER_WEBHOOK_KEY}}
-      # todo use secrets.yaml for this url?
+      run: wget https://api.render.com/deploy/${{secrets.RENDER_WEBHOOK_KEY}}
