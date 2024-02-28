@@ -49,5 +49,5 @@ jobs:
     - name: Checkout github repo
       uses: actions/checkout@v3
     - name: Deploy on Render.com
-      run: wget https://api.render.com/deploy/srv-cnahgfi1hbls73dkbueg?key=6x9W1V71_1Y
+      run: wget https://api.render.com/deploy/{{secrets.RENDER_WEBHOOK_KEY}}
       # todo use secrets.yaml for this url?
