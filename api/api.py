@@ -26,7 +26,7 @@ f2.close()
 def get_customer(customer_id: int):
     """
     Get data of a single customer, selected by id. All columns are included.
-    Internal function used by multiple API routes.
+    Internal function called in multiple API routes.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def list_customers():
 @app.get("/customers/{customer_id}")
 def read_single_customer(customer_id: int):
     """
-    Get data of a single customer, selected by id. All columns are included.
+    Get dict of data of a single customer, selected by id. All features are included.
 
     Parameters
     ----------
@@ -85,34 +85,65 @@ def read_single_customer(customer_id: int):
     -------
     dict
         dict containing all data about customer, one feature per key.
+        Missing values are shown as empty string.
     """
     return get_customer(customer_id).fillna("").to_dict()
 
 
 @app.get("/customers_stats")
 def all_customers_stats():
+    """
+    Get basic statistics (count, mean and standard deviation) of all customer population, for each numerical feature.
+
+    Returns
+    -------
+    dict
+        Nested dict.
+        Level 0: measure (count/mean/std)
+        Level 1: feature names and values
+    """
     return customers.describe().loc[["count", "mean", "std"], :].T.to_dict()
 
 
-# @app.get("/customers/{customer_id}/predict")
 @app.get("/predict/{customer_id}")
 def predict(customer_id: int):
-    if customer_id not in customers.index:
-        raise HTTPException(status_code=404, detail="Customer ID does not exist")
-    probaList = model.predict_proba(pd.DataFrame(customers.loc[customer_id, :]).T)[0]
+    """
+    Predict probability for a selected customer of repaying a loan application.
+
+    Parameters
+    ----------
+    customer_id : int
+        Index of selected customer. If index is out of range, http error 404 is raised.
+
+    Returns
+    -------
+    dict
+        0: probability of class 0
+        1: probability of class 1
+    """
+    probaList = model.predict_proba(pd.DataFrame(get_customer(customer_id)).T)[0]
     return {0: probaList[0], 1: probaList[1]}
 
 
 @app.get("/shap/{customer_id}")
 def shap_values(customer_id: int):
     """
-    Return 20
-    TODO
+    Get shap_values for local
+
+    Parameters
+    ----------
+    customer_id : int
+        Index of selected customer. If index is out of range, http error 404 is raised.
+
+    Returns
+    -------
+    dict
+        Nested dict:
+        Level 0: 'top' for
     """
-    if customer_id not in customers.index:
-        raise HTTPException(status_code=404, detail="Customer ID does not exist")
+    # TODO : instead of 10 top and 10 bottom, 20 most contributing?
     shap_for_sample = pd.DataFrame(
-        shap_explainer.shap_values(customers.loc[customer_id, :])
+        shap_explainer.shap_values(get_customer(customer_id))
     ).fillna(0)
     shap_scaled = StandardScaler().fit_transform(shap_for_sample)
     shap_scaled = pd.DataFrame(shap_scaled, index=customers.columns)
