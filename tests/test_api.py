@@ -62,4 +62,4 @@ def test_shap_values(customer_id, expected_code):
     assert status_code == expected_code
     if expected_code == 200:
         assert isinstance(content, dict)
-        assert len(content) == 2
+        assert len(content) == 20

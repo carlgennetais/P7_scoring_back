@@ -128,7 +128,8 @@ def predict(customer_id: int):
 @app.get("/shap/{customer_id}")
 def shap_values(customer_id: int):
     """
-    Get shap_values for local
+    Get top 20 shap values for a selected customer.
+    These are the 20 features which have the most impact on model prediction for this specific customer (local explainer)
 
     Parameters
     ----------
@@ -138,16 +139,18 @@ def shap_values(customer_id: int):
     Returns
     -------
     dict
-        Nested dict:
-        Level 0: 'top' for
+        dimension: 20
+        key: feature
+        value: shape value
     """
-    # TODO : instead of 10 top and 10 bottom, 20 most contributing?
     shap_for_sample = pd.DataFrame(
         shap_explainer.shap_values(get_customer(customer_id))
     ).fillna(0)
     shap_scaled = StandardScaler().fit_transform(shap_for_sample)
     shap_scaled = pd.DataFrame(shap_scaled, index=customers.columns)
     shap_scaled = pd.Series(shap_scaled.iloc[:, 0])
-    top_shap = shap_scaled.sort_values(ascending=False).head(10)
-    bottom_shap = shap_scaled.sort_values(ascending=True).head(10)
-    return {"top": top_shap.to_dict(), "bottom": bottom_shap.to_dict()}
+    # select top 20 by absolute value
+    top_20_impact_features = (
+        shap_scaled.abs().sort_values(ascending=False).head(20).index
+    )
+    return shap_scaled[top_20_impact_features].to_dict()
