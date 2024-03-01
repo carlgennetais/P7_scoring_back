@@ -7,9 +7,7 @@ from sklearn.preprocessing import StandardScaler
 app = FastAPI()
 
 # load cleaned-transformed dataframe once
-# use raw data instead for interpretability ?
-
-
+# TODO: use raw data instead for interpretability ?
 customers = (
     pd.read_pickle("./data/processed/app_train_cleaned_sample.pkl")
     .set_index("SK_ID_CURR")
@@ -27,7 +25,18 @@ f2.close()
 
 def get_customer(customer_id: int):
     """
-    Return data for one customer
+    Get data of a single customer, selected by id. All columns are included.
+    Internal function used by multiple API routes.
+
+    Parameters
+    ----------
+    customer_id : int
+        Index of selected customer. If index is out of range, http error 404 is raised.
+
+    Returns
+    -------
+    Series
+        Series containing all data about customer, one feature per row.
     """
     if customer_id not in customers.index:
         raise HTTPException(status_code=404, detail="Customer ID does not exist")
@@ -37,22 +46,47 @@ def get_customer(customer_id: int):
 # API routes
 @app.get("/")
 def read_root():
+    """
+    Display a ping successfull message, for debugging purposes.
+
+    Returns
+    -------
+    String
+        "Ping successfull"
+
+    """
     return {"Ping successfull"}
 
 
 @app.get("/customers")
 def list_customers():
-    # TODO performance
+    """
+    Lists all existing customers by id. Limited to the first 1000 rows because of free online hosting conditions.
+
+    Returns
+    -------
+    List
+        The ids of all customers.
+    """
     return customers.head(1000).index.to_list()
 
 
 @app.get("/customers/{customer_id}")
 def read_single_customer(customer_id: int):
-    if customer_id not in customers.index:
-        raise HTTPException(
-            status_code=404, detail="Customer ID is invalid or does not exist"
-        )
-    return customers.loc[customer_id, :].fillna("").to_dict()
+    """
+    Get data of a single customer, selected by id. All columns are included.
+
+    Parameters
+    ----------
+    customer_id : int
+        Index of selected customer. If index is out of range, http error 404 is raised.
+
+    Returns
+    -------
+    dict
+        dict containing all data about customer, one feature per key.
+    """
+    return get_customer(customer_id).fillna("").to_dict()
 
 
 @app.get("/customers_stats")
