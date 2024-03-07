@@ -1,6 +1,10 @@
 # local package
 -e .
 
+# requirements list made with pip list --format=freeze
+# because importing a pickle model only works in the
+# exact same env as when the export was made.
+# TODO: delete useless requirements to speed up install
 Babel==2.14.0
 Bottleneck==1.3.5
 Brotli==1.0.9
