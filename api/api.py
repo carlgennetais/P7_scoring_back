@@ -8,10 +8,8 @@ app = FastAPI()
 
 # load cleaned-transformed dataframe once
 # TODO: use raw data instead for interpretability ?
-customers = (
-    pd.read_pickle("./data/processed/app_train_cleaned_sample.pkl")
-    .set_index("SK_ID_CURR")
-    .drop("TARGET", axis=1)
+customers = pd.read_pickle("./data/processed/app_train_cleaned_sample.pkl").drop(
+    "TARGET", axis=1
 )
 
 # load model and shap explainer
