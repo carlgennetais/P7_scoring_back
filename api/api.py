@@ -19,6 +19,8 @@ f.close()
 with open("./models/shap_explainer.pkl", "rb") as f2:
     shap_explainer = pickle.load(f2)
 f2.close()
+# TODO: update
+PROBA_THRESHOLD = 0.6
 
 
 def get_customer(customer_id: int):
@@ -106,7 +108,7 @@ def all_customers_stats():
 @app.get("/predict/{customer_id}")
 def predict(customer_id: int):
     """
-    Predict probability for a selected customer of repaying a loan application.
+    Predict ability for a selected customer of repaying a loan application.
 
     Parameters
     ----------
@@ -115,12 +117,14 @@ def predict(customer_id: int):
 
     Returns
     -------
-    dict
-        0: probability of class 0
-        1: probability of class 1
+    int:
+        predicted class (0 or 1)
     """
-    probaList = model.predict_proba(pd.DataFrame(get_customer(customer_id)).T)[0]
-    return {0: probaList[0], 1: probaList[1]}
+    proba = model.predict_proba(pd.DataFrame(get_customer(customer_id)).T)[0][0]
+    if proba > PROBA_THRESHOLD:
+        return 1
+    else:
+        return 0
 
 
 @app.get("/shap/{customer_id}")
