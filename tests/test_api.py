@@ -14,11 +14,11 @@ def test_list_customers():
     assert isinstance(content, list)
     assert len(content) > 50
     # test specific value
-    assert 100006 in content
+    assert 279384 in content
 
 
 @pytest.mark.parametrize(
-    "customer_id, expected_code", [(0, 404), (12, 404), (100006, 200), ("1000006", 404)]
+    "customer_id, expected_code", [(0, 404), (12, 404), (279384, 200), ("1000006", 404)]
 )
 def test_read_single_customer(customer_id, expected_code):
     response = client.get(f"/customers/{customer_id}")
@@ -40,7 +40,7 @@ def test_all_customers_stats():
 
 
 @pytest.mark.parametrize(
-    "customer_id, expected_code", [(0, 404), (12, 404), (100006, 200), ("1000006", 404)]
+    "customer_id, expected_code", [(0, 404), (12, 404), (279384, 200), ("1000006", 404)]
 )
 def test_predict(customer_id, expected_code):
     response = client.get(f"/predict/{customer_id}")
@@ -53,8 +53,9 @@ def test_predict(customer_id, expected_code):
 
 
 @pytest.mark.parametrize(
-    "customer_id, expected_code", [(0, 404), (12, 404), (100006, 200)]
+    "customer_id, expected_code", [(0, 404), (12, 404), (279384, 200)]
 )
+# FIX: feature names not matching
 def test_shap_values(customer_id, expected_code):
     response = client.get(f"/shap/{customer_id}")
     status_code = response.status_code
