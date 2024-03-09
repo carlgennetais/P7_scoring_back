@@ -51,9 +51,9 @@ def test_predict(customer_id, expected_code):
     content = response.json()
     assert status_code == expected_code
     if expected_code == 200:
-        assert isinstance(content, int)
-        # assert len(content) == 1
-        assert (content == 0) | (content == 1)
+        assert isinstance(content, dict)
+        assert "loan_result" in content.keys()
+        assert (content["loan_result"] == 0) | (content["loan_result"] == 1)
 
 
 @pytest.mark.parametrize(
