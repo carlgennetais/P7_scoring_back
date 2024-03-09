@@ -99,3 +99,4 @@ Untitled*.ipynb
 
 
 .venv
+api/__pycache__
