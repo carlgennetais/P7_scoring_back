@@ -139,11 +139,11 @@ def predict(customer_id: int):
     int:
         predicted class (0 or 1)
     """
-    proba = model.predict_proba(pd.DataFrame(get_customer(customer_id)).T)[0][0]
+    proba = model.predict_proba(pd.DataFrame(get_customer(customer_id)).T)[0][1]
     if proba > PROBA_THRESHOLD:
-        return 1
+        return {"loan_result": 1}
     else:
-        return 0
+        return {"loan_result": 0}
 
 
 @app.get("/shap/{customer_id}")
