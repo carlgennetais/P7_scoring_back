@@ -1,7 +1,8 @@
 import pytest
-from fastapi.testclient import TestClient
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from fastapi.testclient import TestClient
+
 from api.api import app
 
 # app = FastAPI(default_response_class=ORJSONResponse)
