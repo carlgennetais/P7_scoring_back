@@ -1,4 +1,0 @@
-[304161:0119/091830.290239:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 1 times!
-[304161:0119/091830.301950:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 2 times!
-[304161:0119/091833.387767:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 3 times!
-[304114:0119/091838.629148:ERROR:nss_util.cc(357)] After loading Root Certs, loaded==false: NSS error code: -8018
