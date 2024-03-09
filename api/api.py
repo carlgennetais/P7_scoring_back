@@ -2,25 +2,29 @@ import pickle
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from sklearn.preprocessing import StandardScaler
+from fastapi.responses import ORJSONResponse
+import shap
 
-app = FastAPI()
+# app = FastAPI()
+# FastAPI with non-default Json that allows np.nan
+app = FastAPI(default_response_class=ORJSONResponse)
 
 # load cleaned-transformed dataframe once
 # TODO: use raw data instead for interpretability ?
-customers = pd.read_pickle("./data/processed/app_train_cleaned_sample.pkl").drop(
-    "TARGET", axis=1
+customers = pd.read_pickle("./data/processed/data_cleaned_sample.pkl").drop(
+    ["TARGET", "index"], axis=1
 )
+customers.set_index("SK_ID_CURR", inplace=True, drop=True)
 
 # load model and shap explainer
 with open("./models/model.pkl", "rb") as f:
     model = pickle.load(f)
 f.close()
-with open("./models/shap_explainer.pkl", "rb") as f2:
-    shap_explainer = pickle.load(f2)
+with open("./models/shap_explanation.pkl", "rb") as f2:
+    exp = pickle.load(f2)
 f2.close()
-# TODO: update
-PROBA_THRESHOLD = 0.6
+# load best threshold for this model
+PROBA_THRESHOLD = pd.read_csv("./models/model_proba_threshold.csv").value[0]
 
 
 def get_customer(customer_id: int):
@@ -41,6 +45,20 @@ def get_customer(customer_id: int):
     if customer_id not in customers.index:
         raise HTTPException(status_code=404, detail="Customer ID does not exist")
     return customers.loc[customer_id, :]
+
+
+# shap explainer is a special data structure contains 3 arrays (values, base_values and data)
+# to send it via the API we need to encode it in json and back :
+# exp -> json -> exp
+def explanation_to_dict(single_exp: shap._explanation.Explanation) -> dict:
+    """
+    Convert Shap explanation to dict
+    """
+    v = pd.DataFrame(single_exp.values)[0].to_dict()
+    d = pd.DataFrame(single_exp.data)[0].to_dict()
+    dd = single_exp.display_data.to_dict()
+    b = single_exp.base_values
+    return {"values": v, "base_values": b, "data": d, "display_data": dd}
 
 
 # API routes
@@ -130,8 +148,8 @@ def predict(customer_id: int):
 @app.get("/shap/{customer_id}")
 def shap_values(customer_id: int):
     """
-    Get top 20 shap values for a selected customer.
-    These are the 20 features which have the most impact on model prediction for this specific customer (local explainer)
+    Get the shap values for a selected customer.
+    These features are have the most impact on model prediction for this specific customer (local explainer)
 
     Parameters
     ----------
@@ -140,19 +158,12 @@ def shap_values(customer_id: int):
 
     Returns
     -------
-    dict
-        dimension: 20
-        key: feature
-        value: shape value
+    shap._explanation.Explanation
+        Shap explanation object for a specific customer
+
     """
-    shap_for_sample = pd.DataFrame(
-        shap_explainer.shap_values(get_customer(customer_id))
-    ).fillna(0)
-    shap_scaled = StandardScaler().fit_transform(shap_for_sample)
-    shap_scaled = pd.DataFrame(shap_scaled, index=customers.columns)
-    shap_scaled = pd.Series(shap_scaled.iloc[:, 0])
-    # select top 20 by absolute value
-    top_20_impact_features = (
-        shap_scaled.abs().sort_values(ascending=False).head(20).index
-    )
-    return shap_scaled[top_20_impact_features].to_dict()
+    # TODO:docstring
+    # check customer_id is valid
+    _ = get_customer(customer_id)
+    idx = customers.index.get_loc(customer_id)
+    return explanation_to_dict(exp[idx])
