@@ -1,10 +1,10 @@
 import pickle
-import bz2file as bz2
 
+import bz2file as bz2
 import pandas as pd
+import shap
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import ORJSONResponse
-import shap
 
 # app = FastAPI()
 # FastAPI with non-default Json that allows np.nan
