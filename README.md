@@ -22,7 +22,4 @@ pip install -r requirements.txt
 ```
 pytest .
 ```
-## Screenshots
-<!--TODO: screenshots -->
-
 
