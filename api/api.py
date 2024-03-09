@@ -1,4 +1,5 @@
 import pickle
+import bz2file as bz2
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
@@ -17,7 +18,7 @@ customers = pd.read_pickle("./data/processed/data_cleaned_sample.pkl").drop(
 customers.set_index("SK_ID_CURR", inplace=True, drop=True)
 
 # load model and shap explainer
-with open("./models/model.pkl", "rb") as f:
+with bz2.BZ2File("./models/model.pbz2", "rb") as f:
     model = pickle.load(f)
 f.close()
 with open("./models/shap_explanation.pkl", "rb") as f2:
