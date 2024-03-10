@@ -4,7 +4,7 @@
 # requirements list made with pip list --format=freeze
 # because importing a pickle model only works in the
 # exact same env as when the export was made.
-# TODO: delete useless requirements to speed up install
+# OPTIM: delete useless requirements to speed up install
 alabaster==0.7.13
 alembic==1.13.1
 altair==5.2.0

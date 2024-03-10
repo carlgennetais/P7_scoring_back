@@ -11,11 +11,11 @@ from fastapi.responses import ORJSONResponse
 app = FastAPI(default_response_class=ORJSONResponse)
 
 # load cleaned-transformed dataframe once
-# TODO: use raw data instead for interpretability ?
 customers = pd.read_pickle("./data/processed/data_cleaned_sample.pkl").drop(
     ["TARGET", "index"], axis=1
 )
 customers.set_index("SK_ID_CURR", inplace=True, drop=True)
+
 
 # load model and shap explainer
 with bz2.BZ2File("./models/model.pbz2", "rb") as f:
@@ -163,7 +163,6 @@ def shap_values(customer_id: int):
         Shap explanation object for a specific customer
 
     """
-    # TODO:docstring
     # check customer_id is valid
     _ = get_customer(customer_id)
     idx = customers.index.get_loc(customer_id)
